@@ -510,9 +510,92 @@ function ProposalStage() {
   );
 }
 
+// ---- Countdown Timer (locked until Feb 14 GMT+8) ----
+function CountdownScreen() {
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+
+  useEffect(() => {
+    const targetDate = new Date("2026-02-14T00:00:00+08:00");
+
+    const update = () => {
+      const now = new Date();
+      const diff = targetDate.getTime() - now.getTime();
+
+      if (diff <= 0) {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+        return;
+      }
+
+      setTimeLeft({
+        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+        minutes: Math.floor((diff / (1000 * 60)) % 60),
+        seconds: Math.floor((diff / 1000) % 60),
+      });
+    };
+
+    update();
+    const interval = setInterval(update, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const units = [
+    { label: "Hari", value: timeLeft.days },
+    { label: "Jam", value: timeLeft.hours },
+    { label: "Menit", value: timeLeft.minutes },
+    { label: "Detik", value: timeLeft.seconds },
+  ];
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen px-4 z-10 relative text-center">
+      <span className="text-6xl md:text-7xl mb-6 block" style={{ animation: "float 3s ease-in-out infinite" }}>
+        {"\u{1F48C}"}
+      </span>
+      <h1 className="text-3xl md:text-4xl font-bold text-white mb-3 text-glow">
+        Ssst... belum boleh dibuka!
+      </h1>
+      <p className="text-pink-200/70 text-lg md:text-xl mb-10 font-light">
+        Ada kejutan buat kamu di hari Valentine
+      </p>
+
+      <div className="flex gap-3 md:gap-5">
+        {units.map((u) => (
+          <div key={u.label} className="glass-panel rounded-xl p-4 md:p-6 min-w-[70px] md:min-w-[90px]">
+            <div className="text-3xl md:text-5xl font-bold text-white mb-1 font-handwriting">
+              {String(u.value).padStart(2, "0")}
+            </div>
+            <div className="text-pink-300/60 text-xs md:text-sm uppercase tracking-widest">
+              {u.label}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <p className="mt-12 text-pink-300/40 text-sm italic">
+        Sabar ya, sayangku... {"\u{1F49D}"}
+      </p>
+    </div>
+  );
+}
+
 // ---- Main App ----
+function isValentineDay(): boolean {
+  // Feb 14 in GMT+8
+  const now = new Date();
+  const gmt8 = new Date(now.getTime() + (8 * 60 + now.getTimezoneOffset()) * 60000);
+  return gmt8.getMonth() === 1 && gmt8.getDate() === 14;
+}
+
 export default function ValentineApp() {
   const [stage, setStage] = useState(0);
+  const [unlocked, setUnlocked] = useState(false);
+
+  useEffect(() => {
+    setUnlocked(isValentineDay());
+    // Re-check every 30s in case it turns midnight
+    const interval = setInterval(() => setUnlocked(isValentineDay()), 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="cursor-heart">
@@ -521,22 +604,31 @@ export default function ValentineApp() {
       <FloatingHearts />
 
       <main className="relative min-h-screen w-full flex flex-col">
-        {stage === 0 && <EnvelopeStage onOpen={() => setStage(1)} />}
-        {stage === 1 && <LetterStage onContinue={() => setStage(2)} />}
-        {stage === 2 && <ReasonsStage onContinue={() => setStage(3)} />}
-        {stage === 3 && <ProposalStage />}
+        {!unlocked ? (
+          <CountdownScreen />
+        ) : (
+          <>
+            {stage === 0 && <EnvelopeStage onOpen={() => setStage(1)} />}
+            {stage === 1 && <LetterStage onContinue={() => setStage(2)} />}
+            {stage === 2 && <ReasonsStage onContinue={() => setStage(3)} />}
+            {stage === 3 && <ProposalStage />}
+          </>
+        )}
       </main>
 
-      {/* Progress Dots */}
-      <div className="fixed bottom-6 left-0 right-0 flex justify-center gap-2 z-50 pointer-events-none">
-        {[0, 1, 2, 3].map((s) => (
-          <div
-            key={s}
-            className={`h-2 rounded-full transition-all duration-500 ${stage === s ? "w-8 bg-pink-500" : "w-2 bg-white/20"
+      {/* Progress Dots - only show when unlocked */}
+      {unlocked && (
+        <div className="fixed bottom-6 left-0 right-0 flex justify-center gap-2 z-50 pointer-events-none">
+          {[0, 1, 2, 3].map((s) => (
+            <div
+              key={s}
+              className={`h-2 rounded-full transition-all duration-500 ${
+                stage === s ? "w-8 bg-pink-500" : "w-2 bg-white/20"
               }`}
-          />
-        ))}
-      </div>
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
