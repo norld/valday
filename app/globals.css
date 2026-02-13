@@ -1,0 +1,191 @@
+@import "tailwindcss";
+
+:root {
+  --background: #1a0a1e;
+  --foreground: #fde8f0;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Georgia", "Times New Roman", serif;
+  overflow-x: hidden;
+}
+
+/* Floating hearts */
+@keyframes floatUp {
+  0% {
+    transform: translateY(100vh) rotate(0deg) scale(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(90vh) rotate(15deg) scale(1);
+  }
+  90% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-10vh) rotate(360deg) scale(0.5);
+    opacity: 0;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(255, 105, 135, 0.3), 0 0 60px rgba(255, 105, 135, 0.1); }
+  50% { box-shadow: 0 0 40px rgba(255, 105, 135, 0.5), 0 0 80px rgba(255, 105, 135, 0.2); }
+}
+
+@keyframes envelopeOpen {
+  0% { transform: rotateX(0deg); }
+  100% { transform: rotateX(-180deg); }
+}
+
+@keyframes slideUp {
+  0% { transform: translateY(40px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  0% { opacity: 0; transform: scale(0.5); }
+  50% { transform: scale(1.1); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes heartBeat {
+  0%, 100% { transform: scale(1); }
+  15% { transform: scale(1.3); }
+  30% { transform: scale(1); }
+  45% { transform: scale(1.15); }
+  60% { transform: scale(1); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes confettiFall {
+  0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 0; transform: scale(0); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes letterReveal {
+  0% { max-height: 0; opacity: 0; }
+  100% { max-height: 800px; opacity: 1; }
+}
+
+@keyframes typewriter {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes swing {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+}
+
+.floating-heart {
+  position: fixed;
+  animation: floatUp linear infinite;
+  pointer-events: none;
+  z-index: 0;
+  user-select: none;
+}
+
+.pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.glow {
+  animation: glow 2s ease-in-out infinite;
+}
+
+.heartbeat {
+  animation: heartBeat 1.5s ease-in-out infinite;
+}
+
+.fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+.scale-in {
+  animation: scaleIn 0.6s ease-out forwards;
+}
+
+.shimmer-text {
+  background: linear-gradient(
+    90deg,
+    #fde8f0 0%,
+    #ff6b8a 25%,
+    #ffd4e0 50%,
+    #ff6b8a 75%,
+    #fde8f0 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 3s linear infinite;
+}
+
+.letter-paper {
+  background: linear-gradient(180deg, #fff9f0 0%, #fff5eb 50%, #fff0e0 100%);
+  background-image:
+    linear-gradient(180deg, #fff9f0 0%, #fff5eb 50%, #fff0e0 100%),
+    repeating-linear-gradient(
+      transparent,
+      transparent 31px,
+      #f0d4d4 31px,
+      #f0d4d4 32px
+    );
+  color: #4a2030;
+}
+
+.envelope-shadow {
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.3),
+    0 0 40px rgba(255, 105, 135, 0.2);
+}
+
+.card-hover {
+  transition: all 0.3s ease;
+}
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(255, 105, 135, 0.3);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(255, 105, 135, 0.05);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 105, 135, 0.3);
+  border-radius: 3px;
+}
